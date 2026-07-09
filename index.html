@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Athar — Network Forensics Field Manual & Workbench</title>
-<meta name="description" content="Offline network forensics workbench: BPF builder, beacon detection, DGA scoring, JA3 reference, and a command forge for tcpdump, tshark, Zeek, nfdump and Arkime. Built for FOR572 analysts.">
+<meta name="description" content="Offline network forensics workbench: BPF builder, beacon detection, DGA scoring, JA3 reference, and a command forge for tcpdump, tshark, Zeek, nfdump and Arkime. Runs entirely in the browser.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -117,9 +117,9 @@ footer{border-top:1px solid var(--rule);padding:24px 0 44px;font-size:.68rem;col
 
 <main class="wrap">
 <section class="hero">
- <div class="kicker">FOR572 · Field Manual & Analysis Workbench</div>
+ <div class="kicker">Field Manual &amp; Analysis Workbench</div>
  <h1>The packets left a <em>trace.</em><br>Do the math on it.</h1>
- <p class="lede">A single-file, zero-dependency workbench for network forensic analysts. <b>Build BPF filters</b> without syntax errors, <b>score beacons</b> from Zeek conn.log with real interval statistics, <b>rank domains for DGA</b> using entropy and English bigram plausibility, and <b>forge commands</b> for tcpdump, tshark, Zeek, nfdump and Arkime. Runs entirely in the browser — drop it on a lab VM with no internet and it still works.</p>
+ <p class="lede">A single-file, zero-dependency workbench for network forensic analysts. <b>Build BPF filters</b> without syntax errors, <b>score beacons</b> from Zeek conn.log with real interval statistics, <b>rank domains for DGA</b> using entropy and English bigram plausibility, and <b>forge commands</b> for tcpdump, tshark, Zeek, nfdump and Arkime. Runs entirely in the browser — drop it on an isolated analysis workstation with no internet and it still works.</p>
  <div class="strip">
   <div class="strip-h"><span>SIGNAL VIEW · SYNTHETIC C2 CALLBACK</span><span>INTERVAL 60s · JITTER ±8%</span><span class="r">◆ BEACON CONFIDENCE 0.91</span></div>
   <canvas id="beaconCanvas" width="1200" height="78" aria-label="Animated beacon interval visualization"></canvas>
@@ -243,7 +243,7 @@ cdn.cloudflare.net"></textarea></div>
 <!-- 05 REFERENCE -->
 <section class="panel" id="p-ref">
  <div class="ph">Field Reference</div>
- <p class="psub">Lectern-speed lookup, organized the way FOR572 is taught. No searching a PDF at 14:40 on day three.</p>
+ <p class="psub">Fast lookup for the artifacts you touch most. Filter across every table at once instead of searching a PDF mid-investigation.</p>
  <div class="field" style="max-width:420px"><label for="refSearch">Filter all tables</label><input id="refSearch" placeholder="type to filter — e.g. dns, ja3, netflow"></div>
  <div id="refBlocks"></div>
 </section>
@@ -254,7 +254,7 @@ cdn.cloudflare.net"></textarea></div>
  <p class="psub">Paste an artifact — a Zeek log line, a suspicious HTTP header block, a TLS client hello summary, a NetFlow record, a base64 blob — and get an analyst-grade read. Bring your own Anthropic API key. Nothing is stored; the key lives in page memory only.</p>
  <div class="box"><div class="box-h"><span class="idx">01</span> CREDENTIAL</div><div class="pad">
    <div class="field"><label for="key">Anthropic API key (memory only, never persisted)</label><input type="password" id="key" placeholder="sk-ant-…" autocomplete="off"></div>
-   <div class="note"><b>Evidence handling.</b> Anything you paste here leaves the browser and goes to api.anthropic.com. On a real engagement, that may violate your chain-of-custody or data-handling rules. Use it on lab data, sanitized artifacts, and course material — not on live case evidence unless your policy explicitly permits it. Everything in tabs 02–05 stays local.</div>
+   <div class="note"><b>Evidence handling.</b> Anything you paste here leaves the browser and goes to api.anthropic.com. On a real engagement, that may violate your chain-of-custody or data-handling rules. Use it on lab data and sanitized artifacts — not on live case evidence unless your policy explicitly permits it. Everything in tabs 02–05 stays local.</div>
  </div></div>
  <div class="box"><div class="box-h"><span class="idx">02</span> ARTIFACT</div><div class="pad">
    <div class="field"><label for="aiIn">Paste artifact</label><textarea id="aiIn" spellcheck="false" placeholder="1704067200.123  CxT1  10.0.0.55  49152  203.0.113.9  443  tcp  ssl  0.31  512  1024
@@ -264,7 +264,7 @@ Server Name Indication: cdn-update-svc.duckdns.org"></textarea></div>
      <option value="triage">Triage — what is this, is it suspicious, what next</option>
      <option value="explain">Explain — teach me this artifact field by field</option>
      <option value="pivot">Pivot — what queries should I run next</option>
-     <option value="report">Report — write the finding for a capstone brief</option>
+     <option value="report">Report — write the finding up for a case brief</option>
    </select></div>
    <div class="btns"><button class="b-go" id="aiRun">✦ Analyze</button></div>
    <div class="ai-out" id="aiOut"></div>
@@ -274,7 +274,7 @@ Server Name Indication: cdn-update-svc.duckdns.org"></textarea></div>
 
 <footer><div class="wrap">
  ATHAR أثر — offline network forensics workbench · built by <a href="https://3li.info">Ali AlEnezi</a> (<a href="https://github.com/SiteQ8">@SiteQ8</a>) · MIT<br>
- Companion to SANS FOR572 (Phil Hagen). Not affiliated with, endorsed by, or produced by SANS Institute or GIAC.<br>
+ An independent open-source tool. Not affiliated with or endorsed by any training provider, vendor, or certification body.<br>
  All analysis in tabs 02–05 runs locally. No telemetry. Works air-gapped.
 </div></footer>
 <div class="toast" id="toast"></div>
@@ -348,7 +348,7 @@ const TEMPLATES=[
  {k:["arkime","moloch","full packet","hunt"],label:"Arkime session hunting",
   cmd:`# Ingest a pcap into Arkime\n/opt/arkime/bin/capture -r capture.pcap --tag case-2026-014\n\n# Useful expressions in the Arkime search bar:\nip.dst == 203.0.113.9 && port.dst == 443\nhttp.user-agent == "*curl*" && http.method == POST\ncert.issuer.cn == "*Let's Encrypt*" && country.dst == RU\ntls.ja3 == 51c64c77e60f3980eea90869b68c58a8\nbytes > 10000000 && protocols == dns   # DNS tunneling by volume`},
  {k:["split","iterate","large","scale","batch","many"],label:"Process a huge pcap without dying",
-  cmd:`# Split by size, then iterate\neditcap -c 100000 huge.pcap chunk.pcap\nfor f in chunk_*.pcap; do tshark -r "$f" -Y "dns" -T fields -e dns.qry.name; done | sort -u\n\n# Split by time window\neditcap -A "2026-01-01 00:00:00" -B "2026-01-01 06:00:00" huge.pcap window.pcap\n\n# Merge back\nmergecap -w merged.pcap chunk_*.pcap\n\n# FOR572 ships pcap_iterator.sh for exactly this pattern.`},
+  cmd:`# Split by size, then iterate\neditcap -c 100000 huge.pcap chunk.pcap\nfor f in chunk_*.pcap; do tshark -r "$f" -Y "dns" -T fields -e dns.qry.name; done | sort -u\n\n# Split by time window\neditcap -A "2026-01-01 00:00:00" -B "2026-01-01 06:00:00" huge.pcap window.pcap\n\n# Merge back\nmergecap -w merged.pcap chunk_*.pcap\n\n# Wrap this in a loop script when the capture is too big to hold in memory.`},
  {k:["proxy","squid","log","cache"],label:"Analyze web proxy logs",
   cmd:`# Squid native: rank destinations by bytes served\nawk '{print $7, $5}' access.log | sort | uniq -c | sort -rn | head -25\n\n# HTTP status distribution — 407s and 403s reveal blocked C2 attempts\nawk '{print $4}' access.log | sort | uniq -c | sort -rn\n\n# Large uploads (exfil) — client POST bytes\nawk '$6=="POST" && $5>1000000 {print $3, $7, $5}' access.log`},
  {k:["timeline","sof-elk","elk","elastic","kibana"],label:"SOF-ELK ingest and query",
@@ -682,7 +682,7 @@ $("forgeAi").onclick=async()=>{
   const q=$("fq").value.trim();if(!q){toast("Describe a task first");return}
   const o=$("forgeAiOut");o.style.display="block";o.textContent="✦ Forging…";
   try{o.textContent=await callClaude(key,
-    `You are a network forensics tooling expert helping a SANS FOR572 student. Produce the exact command(s) for this task, preferring tshark, Zeek/zeek-cut, tcpdump, nfdump, editcap, or Arkime. Give the command first in a copyable form, then two lines max explaining the key flags. Task: ${q}`,600);
+    `You are a network forensics tooling expert helping an analyst. Produce the exact command(s) for this task, preferring tshark, Zeek/zeek-cut, tcpdump, nfdump, editcap, or Arkime. Give the command first in a copyable form, then two lines max explaining the key flags. Task: ${q}`,600);
   }catch(e){o.textContent="Error: "+e.message}
 };
 $("aiRun").onclick=async()=>{
@@ -692,9 +692,9 @@ $("aiRun").onclick=async()=>{
   const mode=$("aiRole").value;
   const modes={
     triage:"Triage this network forensic artifact. State what it is, whether it's suspicious and why, and the top 3 next investigative steps. Be concise and specific.",
-    explain:"Explain this network forensic artifact field by field, as if teaching a FOR572 student. Define each value and note what would make it anomalous.",
+    explain:"Explain this network forensic artifact field by field, as if teaching an analyst new to this protocol. Define each value and note what would make it anomalous.",
     pivot:"Given this artifact, list the specific pivot queries an analyst should run next (in tshark/Zeek/nfdump/Arkime syntax) and what each would confirm or rule out.",
-    report:"Write a capstone-brief finding based on this artifact: a one-line executive summary, then a short technical paragraph with the evidence and analytic confidence."
+    report:"Write a case-brief finding based on this artifact: a one-line executive summary, then a short technical paragraph with the evidence and analytic confidence."
   };
   const o=$("aiOut");o.style.display="block";o.textContent="✦ Analyzing…";
   try{o.textContent=await callClaude(key,`${modes[mode]}\n\nArtifact:\n${art}`,800);}
